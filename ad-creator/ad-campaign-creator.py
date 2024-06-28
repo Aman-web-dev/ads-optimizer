@@ -1,51 +1,40 @@
 from flask import Flask, request, jsonify
-from facebook_business.adobjects.adaccount import AdAccount
-from facebook_business.api import FacebookAdsApi
+import requests
+import os 
 from dotenv import load_dotenv
-import os
 
 app = Flask(__name__)
 
-def create_campaign(campaign_name, buying_type, objective, status ,special_ad_categories):
+@app.route('/create_campaign', methods=['POST'])
+def create_campaign():
+    
     # Load environment variables from .env file
     load_dotenv()
-
+    
     access_token = os.getenv('META_ACCESS_TOKEN')
     ad_account_id = os.getenv('META_ACC_ID')
-
-    # Initialize Facebook API
-    FacebookAdsApi.init(access_token=access_token)
-
-    fields = []
-    params = {
-        'name': campaign_name,
-        'buying_type': buying_type,
+    api_version = os.getenv('META_API_VERSION')
+    
+    data = request.get_json()
+    
+    name = data.get('name', 'Video Views campaign')
+    objective = data.get('objective', 'OUTCOME_ENGAGEMENT')
+    status = data.get('status', 'PAUSED')
+    special_ad_categories = data.get('special_ad_categories', [])
+    
+    url = f'https://graph.facebook.com/v{api_version}/act_{ad_account_id}/campaign'
+    
+    payload = {
+        'name': name,
         'objective': objective,
         'status': status,
-        'special_ad_categories':special_ad_categories
+        'special_ad_categories': special_ad_categories,
+        'access_token': access_token
     }
-
-    try:
-        campaign = AdAccount(ad_account_id).create_campaign(
-            fields=fields,
-            params=params,
-        )
-        campaign_id = campaign.get_id()
-        return {'status': 'success', 'campaign_id': campaign_id}
-    except Exception as e:
-        return {'status': 'error', 'message': str(e)}
-
-@app.route('/create_campaign', methods=['POST'])
-def api_create_campaign():
-    data = request.json
-    campaign_name = data.get('campaign_name')
-    buying_type = data.get('buying_type')
-    objective = data.get('objective')
-    status = data.get('status')
-    special_ad_categories=data.get('special_ad_categories')
-
-    result = create_campaign(campaign_name, buying_type, objective, status,special_ad_categories)
-    return jsonify(result)
+    
+    response = requests.post(url, data=payload)
+    
+    return jsonify(response.json())
 
 if __name__ == '__main__':
     app.run(debug=True)

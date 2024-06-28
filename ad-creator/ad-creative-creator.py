@@ -1,51 +1,63 @@
 from flask import Flask, request, jsonify
-from facebook_business.adobjects.adaccount import AdAccount
-from facebook_business.api import FacebookAdsApi
-from dotenv import load_dotenv
+import requests
 import os
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 
-def create_ad_creative(ad_name, title, body, image_url):
-    # Load environment variables from .env file
-    load_dotenv()
+# Load environment variables from .env file
+load_dotenv()
 
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    image_path = request.form['image_path']
+    
+    # Get sensitive information from environment variables
     access_token = os.getenv('META_ACCESS_TOKEN')
+    api_version = os.getenv('META_API_VERSION')
     ad_account_id = os.getenv('META_ACC_ID')
     page_id = os.getenv('META_PAGE_ID')
-    
-    # Initialize Facebook API
-    FacebookAdsApi.init(access_token=access_token)
+    image_hash = os.getenv('META_IMAGE_HASH')
 
-    fields = []
-    params = {
-        'name': ad_name,
-        'object_id': page_id,
-        'title': title,
-        'body': body,
-        'image_url': image_url,
+    # Step 1: Upload the image
+    image_upload_url = f"https://graph.facebook.com/v{api_version}/act_{ad_account_id}/adimages"
+    image_upload_files = {'filename': open(image_path, 'rb')}
+    image_upload_data = {'access_token': access_token}
+
+    image_response = requests.post(image_upload_url, files=image_upload_files, data=image_upload_data)
+
+    if image_response.status_code != 200:
+        return jsonify({'error': 'Image upload failed', 'details': image_response.json()}), image_response.status_code
+
+    # Step 2: Create the ad creative
+    ad_creative_url = f"https://graph.facebook.com/v{api_version}/act_{ad_account_id}/adcreatives"
+    ad_creative_data = {
+        'name': 'Sample Creative',
+        'object_story_spec': {
+            'page_id': page_id,
+            'link_data': {
+                'image_hash': image_hash,
+                'link': f'https://facebook.com/{page_id}',
+                'message': 'try it out'
+            }
+        },
+        'degrees_of_freedom_spec': {
+            'creative_features_spec': {
+                'standard_enhancements': {
+                    'enroll_status': 'OPT_IN'
+                }
+            }
+        },
+        'access_token': access_token
     }
 
-    try:
-        creative = AdAccount(ad_account_id).create_ad_creative(
-            fields=fields,
-            params=params,
-        )
-        creative_id = creative.get_id()
-        return {'status': 'success', 'creative_id': creative_id}
-    except Exception as e:
-        return {'status': 'error', 'message': str(e)}
+    ad_creative_response = requests.post(ad_creative_url, json=ad_creative_data)
 
-@app.route('/create_ad_creative', methods=['POST'])
-def api_create_ad_creative():
-    data = request.json
-    ad_name = data.get('ad_name')
-    title = data.get('title')
-    body = data.get('body')
-    image_url = data.get('image_url')
-    
-    result = create_ad_creative(ad_name, title, body, image_url)
-    return jsonify(result)
+    if ad_creative_response.status_code != 200:
+        return jsonify({'error': 'Ad creative creation failed', 'details': ad_creative_response.json()}), ad_creative_response.status_code
+
+    return jsonify({'success': 'Ad created successfully', 'ad_details': ad_creative_response.json()})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
