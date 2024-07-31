@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "app/webhooks/api.py",          
+        "use": "@vercel/python",  
+        "config": { "pythonVersion": "3.12" }  
+      }
+    ],
+    "routes": [
+      {
+        "src": "/chat-handler",   
+        "dest": "app/handler/chat_handler.py"
+      }
+    ]
+  }
+  
