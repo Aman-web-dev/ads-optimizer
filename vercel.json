@@ -2,16 +2,29 @@
     "version": 2,
     "builds": [
       {
-        "src": "app/webhooks/api.py",          
+        "src": "app/creating.py",          
         "use": "@vercel/python",  
         "config": { "pythonVersion": "3.12" }  
       }
     ],
     "routes": [
       {
-        "src": "/chat-handler",   
-        "dest": "app/handler/chat_handler.py"
+        "src": "/create_campaign",   
+        "dest": "app/creating.py"
+      },
+      {
+        "src": "/create_adset",   
+        "dest": "app/creating.py"
+      },
+      {
+        "src": "/create_creatives",   
+        "dest": "app/creating.py"
+      },
+      {
+        "src": "/create_ads",   
+        "dest": "app/creating.py"
       }
+
     ]
   }
   
