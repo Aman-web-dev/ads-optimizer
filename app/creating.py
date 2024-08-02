@@ -6,7 +6,8 @@ import json
 from utils.utils import encode_payload
 
 app = Flask(__name__)
-client = pymongo.MongoClient(os.environ["MONGO_DB_URI"])
+MONGO_URI = os.environ["MONGO_DB_URI"]
+client = pymongo.MongoClient(MONGO_URI)
 
 db = client["Ads"] 
 
