@@ -59,55 +59,40 @@ def bulk_update_objects():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+    
 
-
-
-
-
-
-
-
-@app.route('/bulk_update_campaigns', methods=['POST'])
+@app.route('/update_campaign', methods=['POST'])
 def bulk_update_campaigns():
     data = request.get_json()
-    campaigns = data.get('campaigns')
+    campaign_id = data.get('campaign_id')
     update= data.get('updates')
     access_token=data.get('access_token')
-    if not campaigns:
+    if not campaign_id:
         return jsonify({'error': 'Campaigns data is required'}), 400
 
     try:
-        for campaign in campaigns:
-            campaign_id = campaign.pop('id')
-            res=update_object('campaign', campaign_id,update,access_token)
+        res=update_object('campaign', campaign_id,update,access_token)
         return jsonify({'message': 'Campaigns updated successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-
-
-
-
-
 
 
 
 
 # Similar endpoints for ad sets, ads, and creatives
 
-@app.route('/bulk_update_adsets', methods=['POST'])
+@app.route('/update_adset', methods=['POST'])
 def bulk_update_adsets():
     data = request.get_json()
-    adsets = data.get('adsets')
+    adset_id = data.get('adset_id')
     update= data.get('updates')
     access_token=data.get('access_token')
-    if not adsets:
+    if not adset_id:
         return jsonify({'error': 'Campaigns data is required'}), 400
 
     try:
-        for adset in adsets:
-            adset_id = adset.pop('id')
-            res=update_object('adset', adset_id,update,access_token)
+        
+        res=update_object('adset', adset_id,update,access_token)
         return jsonify({'message': 'Campaigns updated successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -115,56 +100,36 @@ def bulk_update_adsets():
 
 
 
-
-
-
-
-
-
-
-
-
-@app.route('/bulk_update_ads', methods=['POST'])
+@app.route('/update_ads', methods=['POST'])
 def bulk_update_ads():
     data = request.get_json()
-    ads = data.get('ads')
+    ad_id = data.get('ad_id')
     update= data.get('updates')
     access_token=data.get('access_token')
-    if not ads:
+    if not ad_id:
         return jsonify({'error': 'Campaigns data is required'}), 400
 
     try:
-        for ad in ads:
-            ad_id = ad.pop('id')
-            res=update_object('ad', ad_id,update,access_token)
+      
+        res=update_object('ad', ad_id,update,access_token)
         return jsonify({'message': 'Campaigns updated successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 
 
-
-
-
-
-
-
-
-
-
-@app.route('/bulk_update_creatives', methods=['POST'])
+@app.route('/update_creatives', methods=['POST'])
 def bulk_update_creatives():
     data = request.get_json()
-    creatives = data.get('creatives')
+    creatives_id = data.get('creatives_id')
     update= data.get('updates')
     access_token=data.get('access_token')
-    if not creatives:
+    if not creatives_id:
         return jsonify({'error': 'Campaigns data is required'}), 400
 
     try:
-        for creative in creatives:
-            creative_id = creative.pop('id')
-            res=update_object('campaign', creative_id,update,access_token)
+        
+        res=update_object('campaign', creatives_id,update,access_token)
         return jsonify({'message': 'Campaigns updated successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500

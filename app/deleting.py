@@ -49,81 +49,51 @@ def bulk_delete_objects():
 
 
 
-@app.route('/bulk_delete_campaigns', methods=['POST'])
+@app.route('/delete_campaign', methods=['POST'])
 def bulk_delete_campaigns():
     data = request.json
-    campaign_ids = data['campaign_ids']
+    campaign_id = data['campaign_id']
     access_token=data['access_token']
-    if not campaign_ids:
+    if not campaign_id:
         return jsonify({'error': 'Campaign IDs are required'}), 400
 
     try:
-        for campaign_id in campaign_ids:
-            delete_object(access_token,campaign_id)
-        return jsonify({'message': 'Campaigns deleted successfully'})
+        delete_object(access_token,campaign_id)
+        return jsonify({'message': 'Campaign deleted successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
     
     
-    
-    
-    
-    
-    
-    
-    
 
+    @app.route('/delete_adset', methods=['POST'])
+    def bulk_delete_adsets():
+        data = request.json
+        adset_id= data['adset_id']
+        access_token=data['access_token']
+        if not adset_id:
+            return jsonify({'error': 'Ad set IDs are required'}), 400
 
-
-
-
-
-
-
-
-
-
-
-
-@app.route('/bulk_delete_adsets', methods=['POST'])
-def bulk_delete_adsets():
-    data = request.json
-    adset_ids = data['adset_ids']
-    access_token=data['access_token']
-    if not adset_ids:
-        return jsonify({'error': 'Ad set IDs are required'}), 400
-
-    try:
-        for adset_id in adset_ids:
+        try:
+            
             delete_object(access_token,adset_id)
-        return jsonify({'message': 'Ad sets deleted successfully'})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+            return jsonify({'message': 'Ad set deleted successfully'})
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
     
     
 
-@app.route('/bulk_delete_ads', methods=['POST'])
+@app.route('/delete_ad', methods=['POST'])
 def bulk_delete_ads():
     data = request.json
-    ad_ids = data['ad_ids']
+    ad_id = data['ad_id']
     access_token=data['access_token']
-    if not ad_ids:
+    if not ad_id:
         return jsonify({'error': 'Ad IDs are required'}), 400
 
     try:
-        for ad_id in ad_ids:
-            delete_object(access_token,ad_id)
+        
+        delete_object(access_token,ad_id)
         return jsonify({'message': 'Ads deleted successfully'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500

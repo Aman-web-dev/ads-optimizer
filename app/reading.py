@@ -30,56 +30,60 @@ def get_ads(adset_id,access_token):
     return response.json()
 
 
-@app.route('/get_all_campaign_data', methods=['GET'])
+# @app.route('/campaigns', methods=['GET'])
+# def get_all_campaign_data():
+#     json_body = request.json
+#     access_token = json_body['access_token']
+#     account_id = json_body['account_id']
+
+#     if not account_id:
+#         return jsonify({'error': 'Account ID is required'}), 400
+
+#     try:
+#         campaigns = get_campaigns(account_id, access_token)
+#         adsets = []
+#         ads = []
+
+#         for campaign in campaigns['data']:
+#             adset_data = get_adsets(campaign['id'], access_token)
+#             adsets.extend(adset_data['data'])
+#             for adset in adset_data['data']:
+#                 ad_data = get_ads(adset['id'], access_token)
+#                 ads.extend(ad_data['data'])
+
+#         return jsonify({'campaigns': campaigns['data'], 'adsets': adsets, 'ads': ads})
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
+
+
+    
+    
+
+@app.route('/adsets', methods=['GET'])
 def get_all_campaign_data():
     json_body = request.json
-    access_token = json_body['access_token']
-    account_id = json_body['account_id']
+    access_token = json_body.get('access_token')
+    account_id = json_body.get('account_id')
+    fields= json_body.get('fields')
 
     if not account_id:
         return jsonify({'error': 'Account ID is required'}), 400
+    if not access_token:
+        return jsonify({'error': 'Access token is required'}), 400
 
     try:
-        campaigns = get_campaigns(account_id, access_token)
-        adsets = []
-        ads = []
-
-        for campaign in campaigns['data']:
-            adset_data = get_adsets(campaign['id'], access_token)
-            adsets.extend(adset_data['data'])
-            for adset in adset_data['data']:
-                ad_data = get_ads(adset['id'], access_token)
-                ads.extend(ad_data['data'])
-
-        return jsonify({'campaigns': campaigns['data'], 'adsets': adsets, 'ads': ads})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
-
-
-@app.route('/get_campaign', methods=['GET'])
-def get_campaign():
-    json_body = request.json
-    campaign_id = json_body['campaign_id']
-    fields=json_body['fields']
-    access_token=json_body['access_token']
-    if not campaign_id:
-        return jsonify({'error': 'Campaign ID is required'}), 400
-
-    try:
-        url = f'https://graph.facebook.com/v20.0/{campaign_id}'
-        params = {'access_token': access_token, 'fields':fields }
+        url = f'https://graph.facebook.com/v20.0/act_{account_id}/adsets'
+        params = {'access_token': access_token, 'fields':fields}
         response = requests.get(url, params=params)
-        return response.json()
+        response.raise_for_status()
+        adsets = response.json()
+
+        return jsonify({'campaigns': adsets.get('data', [])})
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    
-    
-    
+        return jsonify({'error': str(e)}), 500    
     
 
-@app.route('/get_adset', methods=['GET'])
+@app.route('/adset/<string:id>', methods=['GET'])
 def get_adset():
     json_body = request.json
     adset_id = json_body['adset_id']
@@ -100,16 +104,42 @@ def get_adset():
         return response.json()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    
+    
+    
 
     
-    
+
+@app.route('/ads', methods=['GET'])
+def get_all_campaign_data():
+    json_body = request.json
+    access_token = json_body.get('access_token')
+    account_id = json_body.get('account_id')
+    fields= json_body.get('fields')
+
+    if not account_id:
+        return jsonify({'error': 'Account ID is required'}), 400
+    if not access_token:
+        return jsonify({'error': 'Access token is required'}), 400
+
+    try:
+        url = f'https://graph.facebook.com/v20.0/act_{account_id}/campaigns'
+        params = {'access_token': access_token, 'fields':fields}
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        campaigns = response.json()
+
+        return jsonify({'campaigns': campaigns.get('data', [])})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  
     
 
-@app.route('/get_ad', methods=['GET'])
+@app.route('/ad/<string:id>', methods=['GET'])
 def get_ad():
     json_body= request.json 
-    ad_id = request.args.get('ad_id')
-    access_token = request.args.get('access_token')
+    ad_id = json_body['ad_id']
+    access_token = json_body['access_token']
     fields = json_body.get('fields', None)  # Handle optional fields parameter
     
     
@@ -127,9 +157,27 @@ def get_ad():
         return response.json()
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    
+@app.route('/adcreatives', methods=['GET'])
+def get_all_campaign_data():
+    json_body = request.json
+    access_token = json_body.get('access_token')
+    account_id = json_body.get('account_id')
+    fields= json_body.get('fields')
 
+    if not account_id:
+        return jsonify({'error': 'Account ID is required'}), 400
+    if not access_token:
+        return jsonify({'error': 'Access token is required'}), 400
 
+    try:
+        url = f'https://graph.facebook.com/v20.0/act_{account_id}/adcreatives'
+        params = {'access_token': access_token, 'fields':fields}
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        creatives = response.json()
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
+        return jsonify({'creatives': creatives.get('data', [])})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500      

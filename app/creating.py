@@ -13,7 +13,7 @@ db = client["Ads"]
 
 
 
-@app.route('/create_campaign', methods=['POST'])
+@app.route('/campaign', methods=['POST'])
 def create_campaign():
   
     json_body = request.json

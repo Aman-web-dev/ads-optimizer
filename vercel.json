@@ -5,6 +5,21 @@
         "src": "app/creating.py",          
         "use": "@vercel/python",  
         "config": { "pythonVersion": "3.12" }  
+      },
+      {
+        "src": "app/deleting.py",          
+        "use": "@vercel/python",  
+        "config": { "pythonVersion": "3.12" }  
+      },
+      {
+        "src": "app/reading.py",          
+        "use": "@vercel/python",  
+        "config": { "pythonVersion": "3.12" }  
+      },
+      {
+        "src": "app/updating.py",          
+        "use": "@vercel/python",  
+        "config": { "pythonVersion": "3.12" }  
       }
     ],
     "routes": [
@@ -23,8 +38,69 @@
       {
         "src": "/create_ads",   
         "dest": "app/creating.py"
+      },
+      {
+        "src": "/bulk_delete_objects",   
+        "dest": "app/deleting.py"
+      },
+      {
+        "src": "/delete_campaign",   
+        "dest": "app/deleting.py"
+      },
+      {
+        "src": "/delete_adset",   
+        "dest": "app/deleting.py"
+      },
+      {
+        "src": "/delete_ad",   
+        "dest": "app/deleting.py"
+      },
+
+      {
+        "src": "/get_all_campaign_data",   
+        "dest": "app/reading.py"
+      },
+      {
+        "src": "/get_campaign",   
+        "dest": "app/reading.py"
+      },
+      {
+        "src": "/get_adset",   
+        "dest": "app/reading.py"
+      },
+      {
+        "src": "/get_ad",   
+        "dest": "app/reading.py"
+      },
+      {
+        "src": "/get_object",   
+        "dest": "app/reading.py"
+      },
+
+
+
+      {
+        "src": "/bulk_update_objects",   
+        "dest": "app/reading.py"
+      },
+      {
+        "src": "/get_campaign",   
+        "dest": "app/reading.py"
+      },
+      {
+        "src": "/get_adset",   
+        "dest": "app/reading.py"
+      },
+      {
+        "src": "/get_ad",   
+        "dest": "app/reading.py"
+      },
+      {
+        "src": "/get_object",   
+        "dest": "app/reading.py"
       }
 
+      
     ]
   }
   
