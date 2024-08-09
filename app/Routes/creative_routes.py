@@ -20,7 +20,6 @@ def create_creative():
     json_body = request.json
     
     params= json_body['params']
-      
     access_token = json_body['access_token']
     ad_account_id = json_body['ad_account_id']
    
@@ -79,8 +78,8 @@ def update_creative(id):
 def get_all_creatives():
     json_body = request.json
     access_token = json_body.get('access_token')
-    account_id = json_body.get('account_id')
-    fields= json_body.get('fields')
+    account_id = json_body.get("ad_account_id")
+    params= json_body.get('params')
 
     if not account_id:
         return jsonify({'error': 'Account ID is required'}), 400
@@ -89,7 +88,7 @@ def get_all_creatives():
 
     try:
         url = f'{FACEBOOK_URL}/act_{account_id}/creatives'
-        params = {'access_token': access_token, 'fields':fields}
+        params['access_token']=access_token
         response = requests.get(url, params=params)
         response.raise_for_status()
         creatives = response.json()
@@ -104,21 +103,21 @@ def get_all_creatives():
 
 @app.route('/creative/<string:id>', methods=['GET'])
 def get_creative(id):
-    # Use request.args to get query parameters
-    fields = request.args.get('fields')
-    access_token = request.args.get('access_token')
+    json_body = request.json
+    access_token = json_body.get('access_token')
+    params= json_body.get('params')
     
     # Check if required parameters are provided
     if not id:
         return jsonify({'error': 'creative ID is required'}), 400
     if not access_token:
         return jsonify({'error': 'Access token is required'}), 400
-    if not fields:
-        return jsonify({'error': 'Fields are required'}), 400
+    if not params:
+        return jsonify({'error': 'params are required'}), 400
 
     try:
         url = f'{FACEBOOK_URL}/{id}'
-        params = {'access_token': access_token, 'fields': fields}
+        params['access_token']=access_token
         response = requests.get(url, params=params)
         
         # Check if the request was successful
@@ -137,8 +136,8 @@ def get_creative(id):
     
 @app.route('/creative/<string:id>', methods=['DELETE'])
 def delete_creative(id):
-    data = request.json
-    access_token = data.get('access_token')
+    json_body = request.json
+    access_token = json_body.get('access_token')
 
     if not access_token:
         return jsonify({'error': 'Access token is required'}), 400
@@ -154,6 +153,33 @@ def delete_creative(id):
         return jsonify({'error': f'HTTP error occurred: {http_err}'}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    
+    
+@app.route('/level/<string:id>/creative', methods=['GET'])
+def get_insights(level_id):
+    json_body = request.json
+    access_token = json_body.get('access_token')
+    params = json_body.get('params')
+
+    if not level_id:
+        return jsonify({'error': 'valid level ID is required'}), 400
+    if not access_token:
+        return jsonify({'error': 'Access token is required'}), 400
+
+    try:
+        url = f'{FACEBOOK_URL}/{level_id}/adcreatives'
+        params['access_token'] = access_token
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        insights = response.json()
+
+        return jsonify({'insights': insights.get('data', [])})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

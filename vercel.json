@@ -1,106 +1,99 @@
 {
     "version": 2,
-    "builds": [
-      {
-        "src": "app/creating.py",          
-        "use": "@vercel/python",  
-        "config": { "pythonVersion": "3.12" }  
-      },
-      {
-        "src": "app/deleting.py",          
-        "use": "@vercel/python",  
-        "config": { "pythonVersion": "3.12" }  
-      },
-      {
-        "src": "app/reading.py",          
-        "use": "@vercel/python",  
-        "config": { "pythonVersion": "3.12" }  
-      },
-      {
-        "src": "app/updating.py",          
-        "use": "@vercel/python",  
-        "config": { "pythonVersion": "3.12" }  
-      }
-    ],
+   "builds": [
+    {
+      "src": "app/routes/adAccount_routes.py",
+      "use": "@vercel/python",
+      "config": { "pythonVersion": "3.12" }  
+    },
+    {
+      "src": "app/routes/adimages_routes.py",
+      "use": "@vercel/python",
+      "config": { "pythonVersion": "3.12" } 
+    },
+    {
+      "src": "app/routes/adset_routes.py",
+      "use": "@vercel/python",
+      "config": { "pythonVersion": "3.12" } 
+    },
+    {
+      "src": "app/routes/ad_routes.py",
+      "use": "@vercel/python",
+      "config": { "pythonVersion": "3.12" } 
+    },
+    {
+      "src": "app/routes/ad_videos.py",
+      "use": "@vercel/python",
+      "config": { "pythonVersion": "3.12" } 
+    },
+    {
+      "src": "app/routes/campaign_routes.py",
+      "use": "@vercel/python",
+      "config": { "pythonVersion": "3.12" } 
+    },
+    {
+      "src": "app/routes/creative_routes.py",
+      "use": "@vercel/python",
+      "config": { "pythonVersion": "3.12" } 
+    }
+  ],
     "routes": [
       {
-        "src": "/create_campaign",   
-        "dest": "app/creating.py"
+        "src": "/ad",
+        "dest": "app/routes/ad_routes.py"
       },
       {
-        "src": "/create_adset",   
-        "dest": "app/creating.py"
+        "src": "/ad/<string:id>",
+        "dest": "app/routes/ad_routes.py"
       },
       {
-        "src": "/create_creatives",   
-        "dest": "app/creating.py"
+        "src": "/ads",
+        "dest": "app/routes/ad_routes.py"
       },
       {
-        "src": "/create_ads",   
-        "dest": "app/creating.py"
+        "src": "/advideo",
+        "dest": "app/routes/ad_videos.py"
       },
       {
-        "src": "/bulk_delete_objects",   
-        "dest": "app/deleting.py"
+        "src": "/advideos",
+        "dest": "app/routes/ad_videos.py"
       },
       {
-        "src": "/delete_campaign",   
-        "dest": "app/deleting.py"
+        "src": "/adset",
+        "dest": "app/routes/adset_routes.py"
       },
       {
-        "src": "/delete_adset",   
-        "dest": "app/deleting.py"
+        "src": "/adset/<string:id>",
+        "dest": "app/routes/adset_routes.py"
       },
       {
-        "src": "/delete_ad",   
-        "dest": "app/deleting.py"
-      },
-
-      {
-        "src": "/get_all_campaign_data",   
-        "dest": "app/reading.py"
+        "src": "/adsets",
+        "dest": "app/routes/adset_routes.py"
       },
       {
-        "src": "/get_campaign",   
-        "dest": "app/reading.py"
+        "src": "/campaign",
+        "dest": "app/routes/campaign_routes.py"
       },
       {
-        "src": "/get_adset",   
-        "dest": "app/reading.py"
+        "src": "/campaign/<string:id>",
+        "dest": "app/routes/campaign_routes.py"
       },
       {
-        "src": "/get_ad",   
-        "dest": "app/reading.py"
+        "src": "/campaigns",
+        "dest": "app/routes/campaign_routes.py"
       },
       {
-        "src": "/get_object",   
-        "dest": "app/reading.py"
-      },
-
-
-
-      {
-        "src": "/bulk_update_objects",   
-        "dest": "app/reading.py"
+        "src": "/creative",
+        "dest": "app/routes/creative_routes.py"
       },
       {
-        "src": "/get_campaign",   
-        "dest": "app/reading.py"
+        "src": "/creative/<string:id>",
+        "dest": "app/routes/creative_routes.py"
       },
       {
-        "src": "/get_adset",   
-        "dest": "app/reading.py"
-      },
-      {
-        "src": "/get_ad",   
-        "dest": "app/reading.py"
-      },
-      {
-        "src": "/get_object",   
-        "dest": "app/reading.py"
+        "src": "/creatives",
+        "dest": "app/routes/creative_routes.py"
       }
-
-      
     ]
   }
   

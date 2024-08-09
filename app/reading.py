@@ -34,7 +34,7 @@ def get_ads(adset_id,access_token):
 # def get_all_campaign_data():
 #     json_body = request.json
 #     access_token = json_body['access_token']
-#     account_id = json_body['account_id']
+#     account_id = json_body["ad_account_id"]
 
 #     if not account_id:
 #         return jsonify({'error': 'Account ID is required'}), 400
@@ -63,7 +63,7 @@ def get_ads(adset_id,access_token):
 def get_all_campaign_data():
     json_body = request.json
     access_token = json_body.get('access_token')
-    account_id = json_body.get('account_id')
+    account_id = json_body.get("ad_account_id")
     fields= json_body.get('fields')
 
     if not account_id:
@@ -115,7 +115,7 @@ def get_adset():
 def get_all_campaign_data():
     json_body = request.json
     access_token = json_body.get('access_token')
-    account_id = json_body.get('account_id')
+    account_id = json_body.get("ad_account_id")
     fields= json_body.get('fields')
 
     if not account_id:
@@ -163,7 +163,7 @@ def get_ad():
 def get_all_campaign_data():
     json_body = request.json
     access_token = json_body.get('access_token')
-    account_id = json_body.get('account_id')
+    account_id = json_body.get("ad_account_id")
     fields= json_body.get('fields')
 
     if not account_id:

@@ -14,7 +14,7 @@ FACEBOOK_URL=os.environ["FACEBOOK_API_URL"]
 db = client["Ads"] 
 
 
-@app.route('/advideo', methods=['POST'])
+@app.route('/advideos', methods=['POST'])
 def create_advideo():
     try:
         json_body = request.json
@@ -26,9 +26,8 @@ def create_advideo():
         access_token = json_body.get('access_token')
 
         if not ad_account_id or not params or not access_token:
-            return jsonify({'error': 'Missing required fields'}), 400
+            return jsonify({'error': 'Missing required params'}), 400
 
-        collection = db["ad-sets"]
 
         payload = encode_payload({**params, 'access_token': access_token})
 
@@ -42,8 +41,6 @@ def create_advideo():
         if not advideo_id:
             return jsonify({'error': 'Failed to create ad set, no ID returned'}), 500
 
-        advideo_details = {**params, 'advideo_id': advideo_id, 'access_token': access_token}
-        collection.insert_one(advideo_details)
 
         return jsonify({'message': 'Ad set created successfully', 'advideo_id': advideo_id}), 201
 
@@ -51,9 +48,46 @@ def create_advideo():
         return jsonify({'error': f'HTTP error occurred: {http_err}'}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+    
+    
+    
 
+@app.route('/advideos', methods=['DELETE'])
+def delete_ad_video():
+    try:
+        # Extract JSON body and parameters
+        json_body = request.json
+        ad_account_id = json_body.get("ad_account_id")
+        access_token = json_body.get("access_token")
+        params = json_body.get("params")
 
+        if not ad_account_id:
+            return jsonify({'error': 'Missing required parameter: ad_account_id'}), 400
+        if not access_token:
+            return jsonify({'error': 'Missing required parameter: access_token'}), 400
+        if not params:
+            return jsonify({'error': 'Missing required parameter: params'}), 400
 
+        # Construct the URL
+        url = f"{FACEBOOK_URL}/{ad_account_id}/advideos"
+
+        # Make the DELETE request to the Facebook API
+        params['access_token']=access_token
+        response = requests.delete(url, params=params)
+        response.raise_for_status()
+
+        # Return the success status
+        return jsonify(response.json())
+
+    except requests.exceptions.HTTPError as http_err:
+        return jsonify({'error': f'HTTP error occurred: {http_err}'}), response.status_code
+    except requests.exceptions.RequestException as req_err:
+        return jsonify({'error': f'Request error occurred: {req_err}'}), 500
+    except Exception as err:
+        return jsonify({'error': f'An error occurred: {err}'}), 500
+    
+    
 
 @app.route('/advideos', methods=['GET'])
 def get_all_advideos():
@@ -63,19 +97,21 @@ def get_all_advideos():
             return jsonify({'error': 'Request body is required'}), 400
 
         access_token = json_body.get('access_token')
-        account_id = json_body.get('account_id')
-        fields = json_body.get('fields', None)  # Handle optional fields parameter
+        account_id = json_body.get("ad_account_id")
+        params = json_body.get('params')  # Handle optional params parameter
 
         if not account_id:
             return jsonify({'error': 'Account ID is required'}), 400
         if not access_token:
             return jsonify({'error': 'Access token is required'}), 400
+        if not params:
+            return jsonify({'error':"params re important"}), 400
 
         url = f'{FACEBOOK_URL}/act_{account_id}/advideos'
         params = {'access_token': access_token}
 
-        if fields:
-            params['fields'] = fields
+        if params:
+            params['params'] = params
 
         response = requests.get(url, params=params)
         response.raise_for_status()

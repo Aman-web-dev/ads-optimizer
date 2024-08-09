@@ -26,7 +26,7 @@ def create_adset():
         access_token = json_body.get('access_token')
 
         if not ad_account_id or not params or not access_token:
-            return jsonify({'error': 'Missing required fields'}), 400
+            return jsonify({'error': 'Missing required Paramters'}), 400
 
         collection = db["ad-sets"]
 
@@ -90,8 +90,8 @@ def get_all_adsets():
             return jsonify({'error': 'Request body is required'}), 400
 
         access_token = json_body.get('access_token')
-        account_id = json_body.get('account_id')
-        fields = json_body.get('fields', None)  # Handle optional fields parameter
+        account_id = json_body.get("ad_account_id")
+        params = json_body.get('params', None)  # Handle optional params parameter
 
         if not account_id:
             return jsonify({'error': 'Account ID is required'}), 400
@@ -99,10 +99,9 @@ def get_all_adsets():
             return jsonify({'error': 'Access token is required'}), 400
 
         url = f'{FACEBOOK_URL}/act_{account_id}/adsets'
-        params = {'access_token': access_token}
 
-        if fields:
-            params['fields'] = fields
+        if params:
+            params['access_token'] = access_token
 
         response = requests.get(url, params=params)
         response.raise_for_status()
@@ -125,16 +124,15 @@ def get_adset(id):
             return jsonify({'error': 'Request body is required'}), 400
 
         access_token = json_body.get("access_token")
-        fields = json_body.get('fields', None)  # Handle optional fields parameter
+        params = json_body.get('params', None)  # Handle optional params parameter
 
         if not access_token:
             return jsonify({'error': 'Access token is required'}), 400
 
         url = f'{FACEBOOK_URL}/{id}'
-        params = {'access_token': access_token}
 
-        if fields:
-            params['fields'] = fields
+        if params:
+            params['access_token'] = access_token
 
         response = requests.get(url, params=params)
 
